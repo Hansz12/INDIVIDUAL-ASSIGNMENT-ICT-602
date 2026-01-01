@@ -1,76 +1,64 @@
-<!-- ## Database Table Schema -->
-## users table
+# Realtime Chat Application Using Angular and Supabase
 
-* id (uuid)
-* full_name (text)
-* avatar_url (text)
+## Student Information
+- **Name:** SITI FARHANA BINTI ABD MALIK 
+- **Student ID:** 2023820378 
+- **Group:** T5CDCS2703C
+- **Course:** MOBILE TECHNOLOGY AND DEVELOPMENT (ICT602)  
+- **Lecturer:** EN. MUHAMMAD ATIF RAMLAN 
 
-## Creating a users table
+---
 
-```sql
-CREATE TABLE public.users (
-   id uuid not null references auth.users on delete cascade,
-   full_name text NULL,
-   avatar_url text NULL,
-   primary key (id)
-);
-```
+## Project Background
 
-## Enable Row Level Security
+The rapid advancement of web technologies has led to the widespread adoption of real-time communication systems in modern applications. Real-time chat applications are commonly used in social networking platforms, customer support services, and collaborative tools. This project focuses on developing a real-time chat application using Angular as the frontend framework and Supabase as the backend service.
 
-```sql
-ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-```
+Angular was selected due to its component-based structure, scalability, and strong support for reactive programming. Supabase was chosen as the backend platform because it provides real-time database functionality, authentication services, and Row Level Security (RLS), which are essential for building secure and scalable web applications. The main objective of this project is to demonstrate the integration of frontend and backend technologies to create a secure real-time chat system.
 
-## Permit Users Access Their Profile
+---
 
-```sql
-CREATE POLICY "Permit Users to Access Their Profile"
-  ON public.users
-  FOR SELECT
-  USING ( auth.uid() = id );
-```
+## Project Features
 
-## Permit Users to Update Their Profile
+- User registration and login using Supabase Authentication  
+- Real-time messaging without page refresh  
+- Message ownership control (only message owner can delete)  
+- Secure database access using Row Level Security (RLS)  
+- Responsive and user-friendly interface  
+- Deployment using Vercel  
 
-```sql
-CREATE POLICY "Permit Users to Update Their Profile"
-  ON public.users
-  FOR UPDATE
-  USING ( auth.uid() = id );
-```
+---
 
-## Supabase Functions
+## Technologies Used
 
-```sql
-CREATE
-OR REPLACE FUNCTION public.user_profile() RETURNS TRIGGER AS $$ BEGIN INSERT INTO public.users (id, full_name,avatar_url)
-VALUES
-  (
-    NEW.id,
-    NEW.raw_user_meta_data ->> 'full_name'::TEXT,
-    NEW.raw_user_meta_data ->> 'avatar_url'::TEXT,
-  );
-RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-```
+- **Frontend:** Angular  
+- **Backend:** Supabase (PostgreSQL, Realtime, Authentication)  
+- **Version Control:** GitHub  
+- **Deployment:** Vercel  
 
-## Supabase Trigger
+---
 
-```sql
-  CREATE TRIGGER
-  create_user_trigger
-  AFTER INSERT ON auth.users
-  FOR EACH ROW
-  EXECUTE PROCEDURE
-    public.user_profile();
-```
+## Discussion
 
-## Chat_Messages table (Real Time)
+Throughout the development of this project, several challenges were encountered, particularly in implementing real-time data synchronization and managing user permissions. One of the main issues faced was understanding Supabase Row Level Security (RLS), which restricts users from deleting messages that they do not own. This behavior initially appeared as a limitation but was later understood as an essential security feature to prevent unauthorized data modification.
 
-* id (uuid)
-* Created At (date)
-* text (text)
-* editable (boolean)
-* sender (uuid)
+Another challenge involved integrating Angular with Supabase’s real-time subscriptions to ensure messages were updated instantly across all users. Additionally, deploying the application to Vercel required proper configuration of environment variables and build settings. These challenges provided valuable learning experiences in frontend–backend integration, real-time application design, authentication, and secure web development.
+
+Overall, this project enhanced understanding of modern web application architecture and highlighted the importance of security and scalability in real-time systems.
+
+---
+
+## GitHub Commit History
+
+The commit history reflects progressive development stages of the project, including initial setup, authentication implementation, real-time messaging, security fixes, and deployment. This demonstrates proper version control practices and continuous improvement throughout the development process.
+
+---
+
+## Conclusion
+
+The real-time chat application successfully demonstrates the use of Angular and Supabase to build a secure and functional web-based communication system. The project meets its objectives and serves as a solid foundation for future enhancements such as role-based administration, message editing, or file sharing.
+
+---
+
+## Deployment Link
+https://individual-assignment-ict-602.vercel.app/
+
